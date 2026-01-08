@@ -52,6 +52,12 @@ export interface FormType {
 	};
 	submissions?: SubmissionType[];
 	notifications?: NotificationType[];
+	rateLimit?: {
+		enabled: boolean;
+		maxSubmissions: number;
+		timeWindowMinutes: number;
+		oneTimeOnly: boolean;
+	};
 }
 
 export interface NotificationType {

@@ -53,6 +53,15 @@
 			"relation": "oneToMany",
 			"target": "plugin::api-forms.notification",
 			"mappedBy": "form"
+		},
+		"rateLimit": {
+			"type": "json",
+			"default": {
+				"enabled": true,
+				"maxSubmissions": 1,
+				"timeWindowMinutes": 5,
+				"oneTimeOnly": false
+			}
 		}
 	}
 }

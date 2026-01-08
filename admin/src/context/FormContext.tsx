@@ -44,6 +44,12 @@ export interface State {
   active: boolean;
   dateFrom: string;
   dateTill: string;
+  rateLimit?: {
+    enabled: boolean;
+    maxSubmissions: number;
+    timeWindowMinutes: number;
+    oneTimeOnly: boolean;
+  };
 }
 
 interface Action {

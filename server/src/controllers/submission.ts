@@ -24,6 +24,38 @@ export default factories.createCoreController('plugin::api-forms.submission', ({
 				return ctx.badRequest('Form not found');
 			}
 
+			// Rate Limit проверка
+			const rateLimitService = strapi.plugin('api-forms').service('rateLimit');
+			const rateLimitConfig = strapiForm.rateLimit || {
+				enabled: true,
+				maxSubmissions: 5,
+				timeWindowMinutes: 5,
+				oneTimeOnly: false,
+			};
+
+			if (rateLimitConfig.enabled) {
+				const clientIP = rateLimitService.getClientIP(ctx);
+				const checkResult = rateLimitService.checkRateLimit(
+					clientIP,
+					form,
+					rateLimitConfig.maxSubmissions,
+					rateLimitConfig.timeWindowMinutes,
+					rateLimitConfig.oneTimeOnly || false
+				);
+
+				if (!checkResult.allowed) {
+					ctx.status = 429;
+					return ctx.send({
+						error: {
+							status: 429,
+							name: 'TooManyRequestsError',
+							message: checkResult.error || 'Слишком много запросов',
+							retryAfter: checkResult.retryAfter || 0,
+						},
+					});
+				}
+			}
+
 			// Handle Multiple File Uploads (Strapi 5 format)
 			if (ctx.request.files) {
 				const uploadedFiles = await strapi

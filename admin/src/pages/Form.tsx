@@ -3,7 +3,7 @@ import { FormProvider, useFormContext } from '../context/FormContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { getTranslation } from '../utils/getTranslation';
-import { Box, Button, DatePicker, Dialog, Field, Flex, Grid, Textarea, Typography } from '@strapi/design-system';
+import { Box, Button, DatePicker, Dialog, Field, Flex, Grid, Textarea, Typography, Checkbox, NumberInput, SingleSelect, SingleSelectOption, Divider } from '@strapi/design-system';
 import { useEffect, useState } from 'react';
 import { CheckCircle, Pencil } from '@strapi/icons';
 import { format } from 'date-fns';
@@ -34,7 +34,7 @@ const FormContent = () => {
 	const [showAlert, toggleAlert] = useState<boolean>(false);
 	const [alertVariant, setAlertVariant] = useState<string>('success');
 	const [alertMessage, setAlertMessage] = useState<string>('');
-	const [response, setResponse] = useState<any>({});
+	const [response, setResponse] = useState<any>(null);
 	const [initialFromDate, setInitialFromDate] = useState<string | null>(null);
 	const [initialTillDate, setInitialTillDate] = useState<string | null>(null);
 
@@ -73,6 +73,20 @@ const FormContent = () => {
 		fetchSettings();
 
 		if (!id) {
+			// Инициализация rateLimit для новой формы
+			if (!state.rateLimit) {
+				dispatch({
+					type: 'EDIT_FORM',
+					payload: {
+						rateLimit: {
+							enabled: true,
+							maxSubmissions: 5,
+							timeWindowMinutes: 5,
+							oneTimeOnly: false,
+						},
+					},
+				});
+			}
 			setIsLoading(false);
 
 			return;
@@ -83,6 +97,16 @@ const FormContent = () => {
 			.then((result) => {
 				setInitialFromDate(result.dateFrom);
 				setInitialTillDate(result.dateTill);
+
+				// Инициализация rateLimit если его нет
+				if (!result.rateLimit) {
+					result.rateLimit = {
+						enabled: true,
+						maxSubmissions: 5,
+						timeWindowMinutes: 5,
+						oneTimeOnly: false,
+					};
+				}
 
 				dispatch({
 					type: 'EDIT_FORM',
@@ -108,10 +132,12 @@ const FormContent = () => {
 				return setIsDialogOpen(true);
 			}
 
-			await formRequests.updateForm(token!, id!, data);
-
+			const result = await formRequests.updateForm(token!, id!, data);
+			// Сохраняем documentId для показа диалога
+			setResponse({ documentId: id });
+			
+			// Показываем диалог успеха
 			setIsDialogOpen(true);
-			toggleAlert(false);
 		} catch (error: any) {
 			setAlertMessage(error.message);
 			setAlertVariant('danger');
@@ -348,9 +374,110 @@ const FormContent = () => {
 								</Grid.Item>
 							</Grid.Root>
 						</Box>
+
+						{/* Rate Limit Settings */}
+						<Box background="neutral0" padding={4} marginBottom={4} shadow="filterShadow" hasRadius>
+							<Typography variant="beta" fontWeight="bold" marginBottom={3}>
+								Защита от спама
+							</Typography>
+							<Grid.Root gap={3}>
+								<Grid.Item col={12} xs={12}>
+									<Checkbox
+										checked={state.rateLimit?.enabled !== false}
+										onCheckedChange={(checked: boolean) =>
+											dispatch({
+												type: 'EDIT_FORM',
+												payload: {
+													rateLimit: {
+														...state.rateLimit,
+														enabled: checked,
+														maxSubmissions: state.rateLimit?.maxSubmissions || 5,
+														timeWindowMinutes: state.rateLimit?.timeWindowMinutes || 5,
+														oneTimeOnly: state.rateLimit?.oneTimeOnly || false,
+													},
+												},
+											})
+										}
+									>
+										Включить защиту от спама
+									</Checkbox>
+								</Grid.Item>
+
+								{state.rateLimit?.enabled !== false && (
+									<>
+										<Grid.Item col={6} xs={12}>
+											<Field.Root>
+												<Field.Label>Максимальное количество отправок</Field.Label>
+												<NumberInput
+													value={state.rateLimit?.maxSubmissions || 5}
+													onValueChange={(value: number) =>
+														dispatch({
+															type: 'EDIT_FORM',
+															payload: {
+																rateLimit: {
+																	...state.rateLimit,
+																	maxSubmissions: value || 1,
+																},
+															},
+														})
+													}
+													min={1}
+												/>
+											</Field.Root>
+										</Grid.Item>
+
+										<Grid.Item col={6} xs={12}>
+											<Field.Root>
+												<Field.Label>Временное окно</Field.Label>
+												<SingleSelect
+													value={String(state.rateLimit?.timeWindowMinutes || 5)}
+													onChange={(value: string) =>
+														dispatch({
+															type: 'EDIT_FORM',
+															payload: {
+																rateLimit: {
+																	...state.rateLimit,
+																	timeWindowMinutes: parseInt(value),
+																},
+															},
+														})
+													}
+												>
+													<SingleSelectOption value="1">1 минута</SingleSelectOption>
+													<SingleSelectOption value="5">5 минут</SingleSelectOption>
+													<SingleSelectOption value="10">10 минут</SingleSelectOption>
+													<SingleSelectOption value="30">30 минут</SingleSelectOption>
+													<SingleSelectOption value="60">1 час</SingleSelectOption>
+													<SingleSelectOption value="1440">24 часа</SingleSelectOption>
+												</SingleSelect>
+											</Field.Root>
+										</Grid.Item>
+
+										<Grid.Item col={12} xs={12}>
+											<Checkbox
+												checked={state.rateLimit?.oneTimeOnly || false}
+												onCheckedChange={(checked: boolean) =>
+													dispatch({
+														type: 'EDIT_FORM',
+														payload: {
+															rateLimit: {
+																...state.rateLimit,
+																oneTimeOnly: checked,
+															},
+														},
+													})
+												}
+											>
+												Форма может быть заполнена только один раз за все время
+											</Checkbox>
+										</Grid.Item>
+									</>
+								)}
+							</Grid.Root>
+						</Box>
 					</Box>
 					<FormBuilder />
-					{response && response.documentId && (
+					{isDialogOpen && (
 						<Dialog.Root open={isDialogOpen} onDismiss={() => setIsDialogOpen(false)}>
 							<Dialog.Content>
 								<Dialog.Header>{formatMessage({ id: getTranslation('alert.success') })}</Dialog.Header>
@@ -358,23 +485,33 @@ const FormContent = () => {
 									{formatMessage({ id: getTranslation('alert.description.success') })}
 								</Dialog.Body>
 								<Dialog.Footer>
-									<Dialog.Cancel>
-										<Button
-											fullWidth
-											variant="secondary"
-											onClick={() => {
-												history(`/plugins/${PLUGIN_ID}/form/${response.documentId}`);
-												setIsDialogOpen(false);
-											}}
-										>
-											{formatMessage({ id: getTranslation('back_to_form') })}
-										</Button>
-									</Dialog.Cancel>
-									<Dialog.Action>
-										<Button fullWidth variant="primary" onClick={() => history(`/plugins/${PLUGIN_ID}`)}>
-											{formatMessage({ id: getTranslation('back_to_overview') })}
-										</Button>
-									</Dialog.Action>
+									{response && response.documentId ? (
+										<>
+											<Dialog.Cancel>
+												<Button
+													fullWidth
+													variant="secondary"
+													onClick={() => {
+														history(`/plugins/${PLUGIN_ID}/form/${response.documentId}`);
+														setIsDialogOpen(false);
+													}}
+												>
+													{formatMessage({ id: getTranslation('back_to_form') })}
+												</Button>
+											</Dialog.Cancel>
+											<Dialog.Action>
+												<Button fullWidth variant="primary" onClick={() => history(`/plugins/${PLUGIN_ID}`)}>
+													{formatMessage({ id: getTranslation('back_to_overview') })}
+												</Button>
+											</Dialog.Action>
+										</>
+									) : (
+										<Dialog.Action>
+											<Button fullWidth variant="primary" onClick={() => setIsDialogOpen(false)}>
+												{formatMessage({ id: getTranslation('close') })}
+											</Button>
+										</Dialog.Action>
+									)}
 								</Dialog.Footer>
 							</Dialog.Content>
 						</Dialog.Root>
