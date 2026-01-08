@@ -13,7 +13,6 @@ import NotificationButtonGroup from '../components/Buttons/HandlerButtonGroup';
 import NotificationModal from '../components/Modals/NotificationModal';
 import { NotificationType } from '../utils/types';
 import { FormProvider } from '../context/FormContext';
-import GenerateForm from '../components/Buttons/GenerateForm';
 import { IconButton } from '@strapi/design-system';
 
 export const formatDate = (dateString) => {
@@ -145,14 +144,11 @@ const HomePage = () => {
 					<Layouts.Header
 						title={formatMessage({ id: getTranslation('forms.label') })}
 						primaryAction={
-							<Flex gap={4}>
-								<GenerateForm onGenerateSuccess={setFetchForms} />
-								<LinkButton startIcon={<Plus style={{ fill: 'white' }} />} href={`/admin/plugins/${PLUGIN_ID}/form`}>
-									{formatMessage({
-										id: getTranslation('forms.subtitle'),
-									})}
-								</LinkButton>
-							</Flex>
+							<LinkButton startIcon={<Plus style={{ fill: 'white' }} />} href={`/admin/plugins/${PLUGIN_ID}/form`}>
+								{formatMessage({
+									id: getTranslation('forms.subtitle'),
+								})}
+							</LinkButton>
 						}
 						navigationAction={<BackButton disabled={undefined} />}
 					/>

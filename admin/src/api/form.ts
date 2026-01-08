@@ -63,15 +63,6 @@ const formRequests = {
     return form.data;
   },
 
-  generateForm: async (token: string, formData?: object): Promise<any> => {
-    try {
-      const data = await fetchInstance(`forms/generate`, token, 'POST', null, formData, true);
-
-      return data.json();
-    } catch (error) {
-      throw new Error('Failed to generate form');
-    }
-  },
   submitForm: async (token: string, formData?: object): Promise<FormRequest> => {
     try {
       const data = await fetchInstance(`forms`, token, 'POST', null, formData, true);

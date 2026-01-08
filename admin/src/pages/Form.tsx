@@ -12,6 +12,7 @@ import AlertWrapper from '../components/Layout/AlertWrapper';
 import formRequests from '../api/form';
 import omit from 'lodash/omit';
 import { PLUGIN_ID } from '../pluginId';
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 type FormParams = {
 	id?: string;
@@ -202,36 +203,38 @@ const FormContent = () => {
 														</Flex>
 													</>
 												) : (
-													<DatePicker
-														locale="nl-NL"
-														minDate={new Date()}
-														label={formatMessage({ id: getTranslation(`forms.fields.dateFrom`) })}
-														onChange={(value: any) => {
-															if (!value) {
-																return;
+													<Tooltip.Provider delayDuration={0} skipDelayDuration={0}>
+														<DatePicker
+															locale="nl-NL"
+															minDate={new Date()}
+															label={formatMessage({ id: getTranslation(`forms.fields.dateFrom`) })}
+															onChange={(value: any) => {
+																if (!value) {
+																	return;
+																}
+
+																const currentDate = new Date();
+																setInitialFromDate(null);
+
+																dispatch({
+																	type: 'EDIT_FORM',
+																	payload: {
+																		dateFrom: format(value, 'dd-MM-yyyy') + 'T00:00:00.000Z',
+																		active: currentDate >= value,
+																	},
+																});
+															}}
+															onClear={() =>
+																dispatch({
+																	type: 'EDIT_FORM',
+																	payload: {
+																		dateFrom: null,
+																		active: true,
+																	},
+																})
 															}
-
-															const currentDate = new Date();
-															setInitialFromDate(null);
-
-															dispatch({
-																type: 'EDIT_FORM',
-																payload: {
-																	dateFrom: format(value, 'dd-MM-yyyy') + 'T00:00:00.000Z',
-																	active: currentDate >= value,
-																},
-															});
-														}}
-														onClear={() =>
-															dispatch({
-																type: 'EDIT_FORM',
-																payload: {
-																	dateFrom: null,
-																	active: true,
-																},
-															})
-														}
-													/>
+														/>
+													</Tooltip.Provider>
 												)}
 											</Field.Root>
 										</Grid.Item>
@@ -255,36 +258,38 @@ const FormContent = () => {
 														</Flex>
 													</>
 												) : (
-													<DatePicker
-														locale="nl-NL"
-														minDate={new Date()}
-														label={formatMessage({ id: getTranslation(`forms.fields.dateTill`) })}
-														onChange={(value: any) => {
-															if (!value) {
-																return;
+													<Tooltip.Provider delayDuration={0} skipDelayDuration={0}>
+														<DatePicker
+															locale="nl-NL"
+															minDate={new Date()}
+															label={formatMessage({ id: getTranslation(`forms.fields.dateTill`) })}
+															onChange={(value: any) => {
+																if (!value) {
+																	return;
+																}
+
+																const currentDate = new Date();
+																setInitialTillDate(null);
+
+																dispatch({
+																	type: 'EDIT_FORM',
+																	payload: {
+																		dateTill: format(value, 'dd-MM-yyyy') + 'T00:00:00.000Z',
+																		active: currentDate <= value,
+																	},
+																});
+															}}
+															onClear={() =>
+																dispatch({
+																	type: 'EDIT_FORM',
+																	payload: {
+																		dateTill: null,
+																		active: true,
+																	},
+																})
 															}
-
-															const currentDate = new Date();
-															setInitialTillDate(null);
-
-															dispatch({
-																type: 'EDIT_FORM',
-																payload: {
-																	dateTill: format(value, 'dd-MM-yyyy') + 'T00:00:00.000Z',
-																	active: currentDate <= value,
-																},
-															});
-														}}
-														onClear={() =>
-															dispatch({
-																type: 'EDIT_FORM',
-																payload: {
-																	dateTill: null,
-																	active: true,
-																},
-															})
-														}
-													/>
+														/>
+													</Tooltip.Provider>
 												)}
 											</Field.Root>
 										</Grid.Item>

@@ -103,7 +103,7 @@ const TableControls = ({
 				}
 			/>
 			<TooltipIconButton
-				label="Bold"
+				label="Жирный"
 				onClick={() => editor.chain().focus().toggleBold().run()}
 				variant="tertiary"
 				disabled={false}
@@ -112,7 +112,7 @@ const TableControls = ({
 				<Bold size={16} />
 			</TooltipIconButton>
 			<TooltipIconButton
-				label="Italic"
+				label="Курсив"
 				onClick={() => editor.chain().focus().toggleItalic().run()}
 				variant="tertiary"
 				disabled={false}
@@ -121,7 +121,7 @@ const TableControls = ({
 				<Italic size={16} />
 			</TooltipIconButton>
 			<TooltipIconButton
-				label="H1"
+				label="Заголовок 1"
 				onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
 				variant="tertiary"
 				disabled={false}
@@ -130,7 +130,7 @@ const TableControls = ({
 				<Heading1 size={16} />
 			</TooltipIconButton>
 			<TooltipIconButton
-				label="H2"
+				label="Заголовок 2"
 				onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
 				variant="tertiary"
 				disabled={false}
@@ -139,7 +139,7 @@ const TableControls = ({
 				<Heading2 size={16} />
 			</TooltipIconButton>
 			<TooltipIconButton
-				label="H3"
+				label="Заголовок 3"
 				onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
 				variant="tertiary"
 				disabled={false}
@@ -149,7 +149,7 @@ const TableControls = ({
 			</TooltipIconButton>
 			<Box style={{ width: '1px', height: '24px', backgroundColor: '#E4E4E7', margin: '0 8px' }} />
 			<TooltipIconButton
-				label="Align left"
+				label="Выровнять по левому краю"
 				onClick={() => editor.chain().focus().setTextAlign('left').run()}
 				variant="tertiary"
 				disabled={false}
@@ -158,7 +158,7 @@ const TableControls = ({
 				<AlignLeft size={16} />
 			</TooltipIconButton>
 			<TooltipIconButton
-				label="Align center"
+				label="Выровнять по центру"
 				onClick={() => editor.chain().focus().setTextAlign('center').run()}
 				variant="tertiary"
 				disabled={false}
@@ -167,7 +167,7 @@ const TableControls = ({
 				<AlignCenter size={16} />
 			</TooltipIconButton>
 			<TooltipIconButton
-				label="Align right"
+				label="Выровнять по правому краю"
 				onClick={() => editor.chain().focus().setTextAlign('right').run()}
 				variant="tertiary"
 				disabled={false}
@@ -177,7 +177,7 @@ const TableControls = ({
 			</TooltipIconButton>
 			<Box style={{ width: '1px', height: '24px', backgroundColor: '#E4E4E7', margin: '0 8px' }} />
 			<TooltipIconButton
-				label="Insert Image"
+				label="Вставить изображение"
 				onClick={() => setMediaOpen(true)}
 				variant="tertiary"
 				disabled={isImageSelected(editor)}
@@ -188,7 +188,7 @@ const TableControls = ({
 			{isImageSelected(editor) && (
 				<>
 					<TooltipIconButton
-						label="Resize Image Small"
+						label="Уменьшить изображение"
 						onClick={() => resizeSelectedImage(editor, 150)}
 						variant="tertiary"
 						disabled={false}
@@ -197,7 +197,7 @@ const TableControls = ({
 						<Minimize size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Resize Image Large"
+						label="Увеличить изображение"
 						onClick={() => resizeSelectedImage(editor, 300)}
 						variant="tertiary"
 						disabled={false}
@@ -206,7 +206,7 @@ const TableControls = ({
 						<Maximize size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Align left"
+						label="Выровнять по левому краю"
 						onClick={() => editor.chain().focus().setTextAlign('left').run()}
 						variant="tertiary"
 						disabled={false}
@@ -215,7 +215,7 @@ const TableControls = ({
 						<AlignLeft size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Align center"
+						label="Выровнять по центру"
 						onClick={() => editor.chain().focus().setTextAlign('center').run()}
 						variant="tertiary"
 						disabled={false}
@@ -224,7 +224,7 @@ const TableControls = ({
 						<AlignCenter size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Align right"
+						label="Выровнять по правому краю"
 						onClick={() => editor.chain().focus().setTextAlign('right').run()}
 						variant="tertiary"
 						disabled={false}
@@ -233,7 +233,7 @@ const TableControls = ({
 						<AlignRight size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Delete image"
+						label="Удалить изображение"
 						onClick={() => editor.chain().focus().deleteImage().run()}
 						variant="tertiary"
 						disabled={false}
@@ -245,7 +245,7 @@ const TableControls = ({
 			)}
 			<Box style={{ width: '1px', height: '24px', backgroundColor: '#E4E4E7', margin: '0 8px' }} />
 
-			<TooltipIconButton label="Insert table" onClick={insertTable} variant="tertiary" disabled={isInTable} width="auto">
+			<TooltipIconButton label="Вставить таблицу" onClick={insertTable} variant="tertiary" disabled={isInTable} width="auto">
 				<Table size={16} />
 			</TooltipIconButton>
 			{isInTable && (
@@ -325,7 +325,7 @@ const TableControls = ({
 						}}
 					/>
 					<TooltipIconButton
-						label="Add row above"
+						label="Добавить строку сверху"
 						onClick={() => editor.chain().focus().addRowBefore().run()}
 						variant="tertiary"
 						disabled={false}
@@ -334,7 +334,7 @@ const TableControls = ({
 						<Rows size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Add row below"
+						label="Добавить строку снизу"
 						onClick={() => editor.chain().focus().addRowAfter().run()}
 						variant="tertiary"
 						disabled={false}
@@ -343,7 +343,7 @@ const TableControls = ({
 						<Rows size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Add column before"
+						label="Добавить столбец слева"
 						onClick={() => editor.chain().focus().addColumnBefore().run()}
 						variant="tertiary"
 						disabled={false}
@@ -352,7 +352,7 @@ const TableControls = ({
 						<Columns size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Add column after"
+						label="Добавить столбец справа"
 						onClick={() => editor.chain().focus().addColumnAfter().run()}
 						variant="tertiary"
 						disabled={false}
@@ -361,7 +361,7 @@ const TableControls = ({
 						<Columns size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Merge cells"
+						label="Объединить ячейки"
 						onClick={() => editor.chain().focus().mergeCells().run()}
 						variant="tertiary"
 						disabled={false}
@@ -370,7 +370,7 @@ const TableControls = ({
 						<Merge size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Split cell"
+						label="Разделить ячейку"
 						onClick={() => editor.chain().focus().splitCell().run()}
 						variant="tertiary"
 						disabled={false}
@@ -379,7 +379,7 @@ const TableControls = ({
 						<SplitSquareVertical size={16} />
 					</TooltipIconButton>
 					<TooltipIconButton
-						label="Delete table"
+						label="Удалить таблицу"
 						onClick={() => editor.chain().focus().deleteTable().run()}
 						variant="tertiary"
 						disabled={false}
@@ -390,12 +390,12 @@ const TableControls = ({
 				</>
 			)}
 			<Box style={{ width: '1px', height: '24px', backgroundColor: '#E4E4E7', margin: '0 8px' }} />
-			<TooltipIconButton label="Source" onClick={() => setSourceEditing(!isSourceEditing)} variant="tertiary" disabled={false} width="auto">
+			<TooltipIconButton label="Исходный код" onClick={() => setSourceEditing(!isSourceEditing)} variant="tertiary" disabled={false} width="auto">
 				<Code size={16} />
 			</TooltipIconButton>
 			<TooltipIconButton
 				disabled={false}
-				label="Preview"
+				label="Предпросмотр"
 				variant="tertiary"
 				width="auto"
 				onClick={() => window?.open()?.document.write(wrapInEmailTemplate(sanitizeEmailHtml(editor?.getHTML() ?? '')))}

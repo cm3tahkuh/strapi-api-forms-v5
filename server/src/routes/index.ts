@@ -68,14 +68,6 @@ export default {
 				},
 			},
 			{
-				method: 'POST',
-				path: '/forms/generate',
-				handler: 'form.generate',
-				config: {
-					policies: ['admin::isAuthenticatedAdmin'],
-				},
-			},
-			{
 				method: 'GET',
 				path: '/forms/:documentId',
 				handler: 'form.findOne',
