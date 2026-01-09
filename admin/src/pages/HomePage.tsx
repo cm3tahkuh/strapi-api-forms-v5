@@ -206,7 +206,7 @@ const HomePage = () => {
 																		<LinkButton
 																			disabled={row.submissions.length === 0}
 																			variant="secondary"
-																			to={`form/${row.documentId}/submissions`}
+																			to={`/plugins/${PLUGIN_ID}/form/${row.documentId}/submissions`}
 																			startIcon={<Mail />}
 																			tag={NavLink}
 																		>

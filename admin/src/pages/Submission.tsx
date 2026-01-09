@@ -8,14 +8,16 @@ import { getTranslation } from '../utils/getTranslation';
 import { BackButton, Layouts, Page, Pagination, Table, useAuth, useQueryParams } from '@strapi/strapi/admin';
 import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import submissionRequests from '../api/submission';
+import formRequests from '../api/form';
 
 const Submission = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const { id } = useParams();
+	const { id: formId } = useParams(); // ID формы из URL (если есть)
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedSubmission, setSelectedSubmission] = useState(null);
+	const [formTitle, setFormTitle] = useState<string | null>(null);
 
 	const truncateValue = (value, maxLength = 100) => {
 		if (typeof value === 'string' && value.length > maxLength) {
@@ -55,11 +57,29 @@ const Submission = () => {
 		pageSize: 10,
 	});
 
+	// Загружаем название формы, если есть formId
 	useEffect(() => {
-		const fetchForms = async () => {
+		const fetchFormTitle = async () => {
+			if (formId && token) {
+				try {
+					const form = await formRequests.getForm(token, formId);
+					setFormTitle(form.title);
+				} catch (error) {
+					console.error('Error fetching form title:', error);
+				}
+			} else {
+				setFormTitle(null);
+			}
+		};
+
+		fetchFormTitle();
+	}, [formId, token]);
+
+	useEffect(() => {
+		const fetchSubmissions = async () => {
 			setIsFetching(true);
 			try {
-				const response = await submissionRequests.getSubmissions(token, query);
+				const response = await submissionRequests.getSubmissions(token, query, formId);
 				setResults(response.data);
 				setPagination(response.meta?.pagination);
 			} catch (error) {
@@ -71,27 +91,8 @@ const Submission = () => {
 			}
 		};
 
-		fetchForms();
-	}, [navigate]);
-
-	useEffect(() => {
-		const fetchForms = async () => {
-			setIsFetching(true);
-			try {
-				const response = await submissionRequests.getSubmissions(token, query);
-				setResults(response.data);
-				setPagination(response.meta?.pagination);
-			} catch (error) {
-				setResults([]);
-				setPagination(null);
-				setError(error);
-			} finally {
-				setIsFetching(false);
-			}
-		};
-
-		fetchForms();
-	}, [location.search]);
+		fetchSubmissions();
+	}, [location.search, formId]);
 
 	const tableHeaders: any = [
 		'#',
@@ -119,7 +120,7 @@ const Submission = () => {
 				{/* @ts-ignore */}
 				<Page.Main style={{ position: 'relative' }}>
 					<Layouts.Header
-						title={formatMessage({ id: getTranslation('submissions.label') })}
+						title={formTitle ? `${formTitle} - ${formatMessage({ id: getTranslation('submissions.label') })}` : formatMessage({ id: getTranslation('submissions.label') })}
 						navigationAction={<BackButton disabled={undefined} />}
 					/>
 
