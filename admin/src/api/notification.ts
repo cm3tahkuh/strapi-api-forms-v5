@@ -27,22 +27,6 @@ const notificationRequests = {
 
 		return notification.data;
 	},
-
-	test: async (token: string, id: string, email: string): Promise<any> => {
-		return await fetchInstance(
-			`notifications/test/${id}`,
-			token,
-			'POST',
-			null,
-			{
-				data: {
-					notificationId: id,
-					email,
-				},
-			},
-			true
-		);
-	},
 };
 
 export default notificationRequests;

@@ -39,16 +39,14 @@ export default factories.createCoreController('plugin::api-forms.form', ({ strap
 			});
 		} else {
 			// In case notification doesn't exist, create it
-			const defaultEmail = await strapi.plugins['email'].services.email.getProviderSettings().settings.defaultFrom;
-
 			await strapi.documents('plugin::api-forms.notification').create({
 				data: {
 					form: documentId,
 					enabled: true,
 					identifier: 'notification',
-					service: 'emailService',
-					from: settings && settings?.globalFromEmail ? `${settings.globalFromName} <${settings.globalFromEmail}>` : defaultEmail,
-					to: settings && settings?.globalEmail ? settings.globalEmail : defaultEmail,
+					service: '',
+					from: '',
+					to: '',
 					message: message,
 					subject: `New submission from API form: ${response.title}`,
 				},
@@ -65,15 +63,13 @@ export default factories.createCoreController('plugin::api-forms.form', ({ strap
 			});
 		} else {
 			// In case confirmation doesn't exist, create it
-			const defaultEmail = await strapi.plugins['email'].services.email.getProviderSettings().settings.defaultFrom;
-
 			await strapi.documents('plugin::api-forms.notification').create({
 				data: {
 					form: documentId,
 					enabled: false,
 					identifier: 'confirmation',
-					service: 'emailService',
-					from: settings && settings?.globalFromEmail ? `${settings.globalFromName} <${settings.globalFromEmail}>` : defaultEmail,
+					service: '',
+					from: '',
 					to: '',
 					subject: `Thank you for your submission on form: ${response.title}`,
 					message: message,

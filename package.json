@@ -1,6 +1,16 @@
 {
-	"version": "2.4.1",
-	"keywords": [],
+	"version": "2.4.2",
+	"keywords": [
+		"strapi",
+		"strapi-plugin",
+		"strapi-v5",
+		"forms",
+		"form-builder",
+		"dynamic-forms",
+		"webforms",
+		"form-submissions",
+		"api-forms"
+	],
 	"type": "commonjs",
 	"exports": {
 		"./package.json": "./package.json",
@@ -94,16 +104,16 @@
 		"displayName": "API Forms",
 		"description": "Create custom forms for websites "
 	},
-	"name": "strapi-api-forms",
-	"description": "Create custom forms for websites ",
+	"name": "@cm3tahkuh/strapi-api-forms",
+	"description": "Create custom forms for websites",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/daandegooijer/strapi-api-forms.git"
+		"url": "git+ssh://git@github.com/cm3tahkuh/strapi-api-forms-v5.git"
 	},
 	"bugs": {
-		"url": "https://github.com/daandegooijer/strapi-api-forms/issues"
+		"url": "https://github.com/cm3tahkuh/strapi-api-forms-v5/issues"
 	},
-	"homepage": "https://github.com/daandegooijer/strapi-api-forms#readme",
-	"author": "Daan de Gooijer <info@daandegooijer.nl>"
+	"homepage": "https://github.com/cm3tahkuh/strapi-api-forms-v5#readme",
+	"author": "cm3tahkuh <markplay13498@gmail.com>"
 }

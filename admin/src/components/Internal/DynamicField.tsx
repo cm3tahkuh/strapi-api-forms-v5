@@ -7,12 +7,6 @@ import { useIntl } from 'react-intl';
 import { getTranslation } from '../../utils/getTranslation';
 import { useLazyComponents } from './CustomFields';
 import RichTextMediaField from '../Fields/RichTextMediaField';
-import {
-	getDefaultEmailFooter,
-	getDefaultEmailHeader,
-	getDefaultEmailBody,
-	getDefaultEmailTemplate,
-} from '../Settings/DefaultEmailPlaceholders';
 
 const builtinComponents = {
 	string: TextInput,
@@ -40,18 +34,6 @@ const DynamicField = ({ config }) => {
 
 	if (!Component) {
 		return <></>;
-	}
-
-	if (uid === 'richtext' && !field.value) {
-		const defaultValueMap: Record<string, () => string> = {
-			html: getDefaultEmailTemplate,
-		};
-
-		const getDefaultValue = defaultValueMap[name];
-
-		if (getDefaultValue) {
-			field.value = getDefaultValue();
-		}
 	}
 
 	return (

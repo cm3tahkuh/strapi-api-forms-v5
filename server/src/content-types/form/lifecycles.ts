@@ -22,16 +22,15 @@ export default {
 
 		const settings = await strapi.documents('plugin::api-forms.setting').findFirst();
 		const message = generateNotificationHtml(result, settings);
-		const defaultEmail = await strapi.plugins['email'].services.email.getProviderSettings().settings.defaultFrom;
 
 		const notification = await strapi.documents('plugin::api-forms.notification').create({
 			data: {
 				form: result.id,
 				enabled: true,
 				identifier: 'notification',
-				service: 'emailService',
-				from: settings && settings?.globalFromEmail ? `${settings.globalFromName} <${settings.globalFromEmail}>` : defaultEmail,
-				to: settings && settings?.globalEmail ? settings.globalEmail : defaultEmail,
+				service: '',
+				from: '',
+				to: '',
 				message: message,
 				subject: `New submission from API form: ${result.title}`,
 			},
@@ -42,8 +41,8 @@ export default {
 				form: result.id,
 				enabled: false,
 				identifier: 'confirmation',
-				service: 'emailService',
-				from: settings && settings?.globalFromEmail ? `${settings.globalFromName} <${settings.globalFromEmail}>` : defaultEmail,
+				service: '',
+				from: '',
 				to: '',
 				subject: `Thank you for your submission on form: ${result.title}`,
 				message: message,

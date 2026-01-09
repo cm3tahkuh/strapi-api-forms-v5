@@ -18,21 +18,6 @@
 		"draftAndPublish": false
 	},
 	"attributes": {
-		"html": {
-			"type": "richtext"
-		},
-		"htmlBgColor": {
-			"type": "string"
-		},
-		"globalFromName": {
-			"type": "string"
-		},
-		"globalFromEmail": {
-			"type": "email"
-		},
-		"globalEmail": {
-			"type": "email"
-		},
 		"globalSuccessMessage": {
 			"type": "richtext"
 		},

@@ -42,7 +42,7 @@
 		},
 		"service": {
 			"type": "string",
-			"default": "emailService"
+			"default": ""
 		},
 		"form": {
 			"type": "relation",

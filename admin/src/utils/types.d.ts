@@ -166,25 +166,9 @@ export type HandlerType = {
 	id: number;
 	identifier: string;
 	type: HandlerTypeEnum;
-	data: EmailHandlerDataType;
+	data: any;
 	enabled: boolean;
 	service: string;
-};
-
-export type EmailHandlerDataType = {
-	sendTo: string;
-	sendFrom: string;
-	subject: string;
-	message: string;
-};
-
-export type EmailSubmissionType = {
-	to: string[];
-	from: string;
-	subject: string;
-	html: string;
-	attachment?: { data?: string; filename: string }[];
-	attachments?: { path?: string; filename: string }[];
 };
 
 export type HandlerCollectionType = Array<HandlerType>;

@@ -131,22 +131,10 @@
 	"api-forms.handlers.confirmation": "Отправителю",
 	"api-forms.settings": "Настройки",
 	"api-forms.settings.label": "Настройки",
-	"api-forms.settings.label.globalFromName": "Глобальный отправитель",
-	"api-forms.settings.label.globalFromEmail": "Глобальный email адрес отправителя",
 	"api-forms.settings.label.globalSuccessMessage": "Глобальное сообщение об успехе",
 	"api-forms.settings.label.globalErrorMessage": "Глобальное сообщение об ошибке",
-	"api-forms.settings.label.htmlBgColor": "Цвет фона HTML",
-	"api-forms.settings.label.html": "HTML шаблон",
-	"api-forms.settings.label.htmlHeader": "HTML заголовок",
-	"api-forms.settings.label.globalEmail": "Глобальный email адрес получателя",
-	"api-forms.settings.description.globalFromName": "Установить имя по умолчанию для всех форм. Это может быть переопределено отправителем в настройках формы.",
-	"api-forms.settings.description.globalFromEmail": "Установить email адрес по умолчанию для всех форм. Это может быть переопределено получателем в настройках формы.",
-	"api-forms.settings.description.globalEmail": "Установить email адрес получателя по умолчанию для всех форм.",
 	"api-forms.settings.description.globalSuccessMessage": "Установить сообщение об успехе для всех форм. Это может быть переопределено сообщением об успехе в настройках формы.",
-	"api-forms.settings.description.globalErrorMessage": "Установить сообщение об ошибке для всех форм. Это может быть переопределено сообщением об ошибке в настройках формы.",
-	"api-forms.settings.description.htmlFooter": "Установить HTML футер для всех форм.",
-	"api-forms.settings.description.htmlBgColor": "Установить цвет фона HTML в виде HEX кода.",
-	"api-forms.settings.description.html": "Установить HTML шаблон для всех форм. Отправленная запись будет включена сюда."
+	"api-forms.settings.description.globalErrorMessage": "Установить сообщение об ошибке для всех форм. Это может быть переопределено сообщением об ошибке в настройках формы."
 }
 
 

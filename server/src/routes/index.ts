@@ -108,14 +108,6 @@ export default {
 				},
 			},
 			{
-				method: 'POST',
-				path: '/notifications/test/:id',
-				handler: 'notification.test',
-				config: {
-					policies: ['admin::isAuthenticatedAdmin'],
-				},
-			},
-			{
 				method: 'GET',
 				path: '/setting',
 				handler: 'setting.find',

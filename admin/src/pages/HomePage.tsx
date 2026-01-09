@@ -9,10 +9,6 @@ import { getTranslation } from '../utils/getTranslation';
 import { BackButton, Layouts, Page, Pagination, Table, useAuth, useQueryParams } from '@strapi/strapi/admin';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import ExportButton from '../components/Buttons/ExportButton';
-import NotificationButtonGroup from '../components/Buttons/HandlerButtonGroup';
-import NotificationModal from '../components/Modals/NotificationModal';
-import { NotificationType } from '../utils/types';
-import { FormProvider } from '../context/FormContext';
 import { IconButton } from '@strapi/design-system';
 
 export const formatDate = (dateString) => {
@@ -31,9 +27,6 @@ const HomePage = () => {
 
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [selectedRow, setSelectedRow] = useState(null);
-
-	const [isModalVisible, setModalIsVisible] = useState(false);
-	const [handlerType, setHandlerType] = useState<NotificationType | null>(null);
 
 	const [results, setResults] = useState([]);
 	const [pagination, setPagination] = useState([]);
@@ -96,9 +89,6 @@ const HomePage = () => {
 		}),
 		formatMessage({
 			id: getTranslation(`list.submissions`),
-		}),
-		formatMessage({
-			id: getTranslation(`list.handlers`),
 		}),
 		formatMessage({
 			id: getTranslation(`list.active`),
@@ -227,17 +217,6 @@ const HomePage = () => {
 																</Table.Cell>
 																<Table.Cell>
 																	<Flex gap={2} justifyContent="flex-start">
-																		{Boolean(row.notifications!.length) && (
-																			<NotificationButtonGroup
-																				notifications={row.notifications}
-																				setModalIsVisible={setModalIsVisible}
-																				setHandlerType={setHandlerType}
-																			/>
-																		)}
-																	</Flex>
-																</Table.Cell>
-																<Table.Cell>
-																	<Flex gap={2} justifyContent="flex-start">
 																		{row.active}
 																		<Badge active={row.active}>
 																			{formatMessage({
@@ -285,15 +264,6 @@ const HomePage = () => {
 								</Box>
 							</Grid.Item>
 						</Grid.Root>
-						{isModalVisible && handlerType && (
-							<FormProvider>
-								<NotificationModal
-									currentNotification={handlerType}
-									isModalVisible={isModalVisible}
-									setModalIsVisible={setModalIsVisible}
-								/>
-							</FormProvider>
-						)}
 						<Dialog.Root open={isDialogOpen} onDismiss={() => setIsDialogOpen(false)}>
 							<Dialog.Content>
 								<Dialog.Header>{formatMessage({ id: getTranslation('dialog.delete.text') })}</Dialog.Header>

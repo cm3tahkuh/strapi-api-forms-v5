@@ -47,13 +47,7 @@ const Settings = () => {
 			} catch (error) {
 				console.info('Error fetching settings:', error);
 
-				setFormData({
-					globalEmail: '',
-					globalFromEmail: '',
-					globalFromName: '',
-					html: '',
-					htmlBgColor: '#ffffff',
-				});
+				setFormData({});
 			} finally {
 				setIsFetching(false);
 			}

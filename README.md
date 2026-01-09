@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A Strapi 5 plugin to create dynamic webforms, manage submission handlers and view submissions wrapped in a simple GUI.
+A Strapi 5 plugin to create dynamic webforms and view submissions wrapped in a simple GUI.
 ![img.png](img.png)
 ![img_1.png](img_1.png)
 
@@ -20,13 +20,9 @@ A Strapi 5 plugin to create dynamic webforms, manage submission handlers and vie
       - Supporting multiple screens (phone, tablet, desktop)
       - Supporting multiple field types (text, textarea, checkbox, radio, select and file)
       - Supporting grid (tailwind)
-- **Create submission handlers**
-  - Currently, manage a custom confirmation and notification after submission
-    - Notification for the receiver
-    - Confirmation for the submitter
-    - WYSIWYG editor with placeholders for the created form fields
-    - Test e-mail
 - **View and export submissions**
+  - View all form submissions
+  - Export submissions to CSV
 
 ---
 
@@ -52,13 +48,13 @@ directory:
 ### Yarn:
 
 ```bash
-yarn add strapi-api-forms-v5
+yarn add @cm3tahkuh/strapi-api-forms
 ```
 
 ### NPM:
 
 ```bash
-npm install strapi-api-forms-v5
+npm install @cm3tahkuh/strapi-api-forms
 ```
 
 ---
