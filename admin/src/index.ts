@@ -29,7 +29,7 @@ export default {
 	async registerTrads({ locales }: { locales: string[] }) {
 		// Загружаем только русский язык для всех локалей
 		const { default: ruData } = await import('./translations/ru.json');
-		
+
 		return locales.map((locale) => ({
 			data: ruData,
 			locale,

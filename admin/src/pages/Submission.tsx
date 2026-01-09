@@ -80,8 +80,8 @@ const Submission = () => {
 			setIsFetching(true);
 			try {
 				const response = await submissionRequests.getSubmissions(token, query, formId);
-				setResults(response.data);
-				setPagination(response.meta?.pagination);
+				setResults(response.data || []);
+				setPagination(response.meta?.pagination || null);
 			} catch (error) {
 				setResults([]);
 				setPagination(null);
@@ -149,10 +149,10 @@ const Submission = () => {
 											<Table.Loading />
 											<Table.Empty />
 											<Table.Body>
-											{results &&
+											{results && Array.isArray(results) &&
 												results.map((row: any) => {
 													// Форматируем дату в локальном часовом поясе пользователя
-													const creationDate = new Intl.DateTimeFormat('ru-RU', {
+													const creationDate = row.createdAt ? new Intl.DateTimeFormat('ru-RU', {
 														year: 'numeric',
 														month: '2-digit',
 														day: '2-digit',
@@ -160,11 +160,21 @@ const Submission = () => {
 														minute: '2-digit',
 														second: '2-digit',
 														timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-													}).format(new Date(row.createdAt));
+													}).format(new Date(row.createdAt)) : 'N/A';
 
 													// Обрабатываем submission (может быть строкой JSON или объектом)
-													const submissionData = typeof row.submission === 'string' ? JSON.parse(row.submission) : row.submission;
-													const submission = Object.entries(submissionData).map((value, key) => `${value.join(': ')}  `);
+													let submission = [];
+													if (row.submission) {
+														try {
+															const submissionData = typeof row.submission === 'string' ? JSON.parse(row.submission) : row.submission;
+															if (submissionData && typeof submissionData === 'object') {
+																submission = Object.entries(submissionData).map((value, key) => `${value.join(': ')}  `);
+															}
+														} catch (e) {
+															console.error('Error parsing submission:', e);
+															submission = ['Ошибка парсинга данных'];
+														}
+													}
 
 														return (
 															<Table.Row key={row.id}>
@@ -173,7 +183,7 @@ const Submission = () => {
 																</Table.Cell>
 																<Table.Cell>
 																	<Typography textColor="neutral800">
-																		<div>{truncateValue(submission.join(' - '))}</div>
+																		<div>{submission && submission.length > 0 ? truncateValue(submission.join(' - ')) : 'Нет данных'}</div>
 																	</Typography>
 																</Table.Cell>
 																<Table.Cell>

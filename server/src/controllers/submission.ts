@@ -4,6 +4,78 @@
 import { factories } from '@strapi/strapi';
 
 export default factories.createCoreController('plugin::api-forms.submission', ({ strapi }) => ({
+	async find(ctx) {
+		const { query } = ctx;
+		
+		// Если есть фильтр по documentId формы, преобразуем его в id
+		if (query.filters && typeof query.filters === 'object' && 'form' in query.filters) {
+			const formFilter = query.filters.form as any;
+			if (formFilter && formFilter.documentId) {
+				const formDocumentId = formFilter.documentId;
+				const form = await strapi.documents('plugin::api-forms.form').findOne({ 
+					documentId: formDocumentId 
+				});
+				
+				if (form) {
+					// Заменяем фильтр на id формы
+					query.filters = {
+						...query.filters,
+						form: {
+							id: form.id,
+						},
+					};
+				} else {
+					// Если форма не найдена, возвращаем пустой результат
+					const pagination = query.pagination as any;
+					return {
+						data: [],
+						meta: {
+							pagination: {
+								page: pagination?.page || 1,
+								pageSize: pagination?.pageSize || 10,
+								pageCount: 0,
+								total: 0,
+							},
+						},
+					};
+				}
+			}
+		}
+		
+		// Используем стандартный метод findMany с пагинацией
+		const populate = query.populate || ['form', 'files'];
+		const pagination = query.pagination as any;
+		const page = pagination?.page || 1;
+		const pageSize = pagination?.pageSize || 10;
+		
+		const result = await strapi.documents('plugin::api-forms.submission').findMany({
+			filters: query.filters,
+			populate,
+			pagination: {
+				page,
+				pageSize,
+			},
+			sort: query.sort || 'createdAt:desc',
+		} as any);
+		
+		// Получаем общее количество для пагинации
+		const total = await strapi.documents('plugin::api-forms.submission').count({
+			filters: query.filters,
+		} as any);
+		
+		return {
+			data: result,
+			meta: {
+				pagination: {
+					page,
+					pageSize,
+					pageCount: Math.ceil(total / pageSize),
+					total,
+				},
+			},
+		};
+	},
+
 	async post(ctx) {
 		try {
 			const { form, submission, referer } = ctx.request.body;
