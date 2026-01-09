@@ -49,9 +49,13 @@
 	"api-forms.forms.fields.test_email.info": "Тестовое письмо будет отправлено на адрес 'от'",
 	"api-forms.forms.fields.test_email.label": "Отправить тестовое письмо для проверки настроек email",
 	"api-forms.forms.fields.title": "Заголовок",
+	"api-forms.forms.fields.description": "Описание",
 	"api-forms.forms.fields.general": "Форма",
 	"api-forms.forms.fields.successMessage": "Сообщение после успешной отправки",
 	"api-forms.forms.fields.errorMessage": "Сообщение после неудачной отправки",
+	"api-forms.forms.fields.active": "Форма активна",
+	"api-forms.forms.fields.active.on": "Включено",
+	"api-forms.forms.fields.active.off": "Выключено",
 	"api-forms.forms.fields.dateFrom": "Форма активна с",
 	"api-forms.forms.fields.dateTill": "Форма активна до",
 	"api-forms.forms.fields.from": "От",
@@ -144,5 +148,6 @@
 	"api-forms.settings.description.htmlBgColor": "Установить цвет фона HTML в виде HEX кода.",
 	"api-forms.settings.description.html": "Установить HTML шаблон для всех форм. Отправленная запись будет включена сюда."
 }
+
 
 

@@ -38,6 +38,7 @@ export interface NotificationRequest {
 export interface FormType {
 	id?: number | null;
 	title: string;
+	description?: string;
 	documentId: string;
 	successMessage: string;
 	errorMessage: string;
@@ -108,6 +109,7 @@ export type SubmissionCollectionType = Array<SubmissionType>;
 export interface FieldType {
 	label: string;
 	placeholder?: string;
+	description?: string;
 	name: string;
 	type?: FieldTypeEnum;
 	options: FieldOptionProps[] | [];

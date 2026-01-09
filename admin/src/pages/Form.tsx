@@ -3,10 +3,9 @@ import { FormProvider, useFormContext } from '../context/FormContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { getTranslation } from '../utils/getTranslation';
-import { Box, Button, DatePicker, Dialog, Field, Flex, Grid, Textarea, Typography, Checkbox, NumberInput, SingleSelect, SingleSelectOption, Divider } from '@strapi/design-system';
+import { Box, Button, Dialog, Field, Flex, Grid, Textarea, Typography, Checkbox, NumberInput, SingleSelect, SingleSelectOption, Divider, Switch } from '@strapi/design-system';
 import { useEffect, useState } from 'react';
-import { CheckCircle, Pencil } from '@strapi/icons';
-import { format } from 'date-fns';
+import { CheckCircle } from '@strapi/icons';
 import { BackButton, Layouts, Page, useAuth, useFetchClient } from '@strapi/strapi/admin';
 import AlertWrapper from '../components/Layout/AlertWrapper';
 import formRequests from '../api/form';
@@ -35,8 +34,6 @@ const FormContent = () => {
 	const [alertVariant, setAlertVariant] = useState<string>('success');
 	const [alertMessage, setAlertMessage] = useState<string>('');
 	const [response, setResponse] = useState<any>(null);
-	const [initialFromDate, setInitialFromDate] = useState<string | null>(null);
-	const [initialTillDate, setInitialTillDate] = useState<string | null>(null);
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -73,20 +70,19 @@ const FormContent = () => {
 		fetchSettings();
 
 		if (!id) {
-			// Инициализация rateLimit для новой формы
-			if (!state.rateLimit) {
-				dispatch({
-					type: 'EDIT_FORM',
-					payload: {
-						rateLimit: {
-							enabled: true,
-							maxSubmissions: 5,
-							timeWindowMinutes: 5,
-							oneTimeOnly: false,
-						},
+			// Инициализация для новой формы
+			dispatch({
+				type: 'EDIT_FORM',
+				payload: {
+					active: true, // Форма активна по умолчанию
+					rateLimit: state.rateLimit || {
+						enabled: true,
+						maxSubmissions: 5,
+						timeWindowMinutes: 5,
+						oneTimeOnly: false,
 					},
-				});
-			}
+				},
+			});
 			setIsLoading(false);
 
 			return;
@@ -95,9 +91,6 @@ const FormContent = () => {
 		formRequests
 			.getForm(token!, id)
 			.then((result) => {
-				setInitialFromDate(result.dateFrom);
-				setInitialTillDate(result.dateTill);
-
 				// Инициализация rateLimit если его нет
 				if (!result.rateLimit) {
 					result.rateLimit = {
@@ -182,9 +175,9 @@ const FormContent = () => {
 
 				<Layouts.Content>
 					<Box>
-						<Box background="neutral0" padding={4} marginBottom={4} shadow="filterShadow" hasRadius>
-							<Grid.Root gap={3}>
-								<Grid.Item col={6} xs={12}>
+						<Box background="neutral100" padding={6} marginBottom={4} shadow="filterShadow" hasRadius>
+							<Grid.Root gap={4}>
+								<Grid.Item col={12} xs={12}>
 									<Field.Root
 										name="title"
 										required
@@ -208,121 +201,48 @@ const FormContent = () => {
 										<Field.Error />
 									</Field.Root>
 								</Grid.Item>
-								<Grid.Item col={6} xs={12}>
-									<Grid.Root name="date" gap={2} style={{ width: '100%' }}>
-										<Grid.Item col={6} xs={6}>
-											<Field.Root style={{ width: '100%' }}>
-												<Field.Label>{formatMessage({ id: getTranslation(`forms.fields.dateFrom`) })}</Field.Label>
-												{initialFromDate ? (
-													<>
-														<Flex>
-															<Typography>{initialFromDate}</Typography>
-															<Pencil
-																style={{
-																	cursor: 'pointer',
-																	marginLeft: '10px',
-																	width: '0.75rem',
-																}}
-																onClick={() => setInitialFromDate(null)}
-																color="primary"
-															/>
-														</Flex>
-													</>
-												) : (
-													<Tooltip.Provider delayDuration={0} skipDelayDuration={0}>
-														<DatePicker
-															locale="nl-NL"
-															minDate={new Date()}
-															label={formatMessage({ id: getTranslation(`forms.fields.dateFrom`) })}
-															onChange={(value: any) => {
-																if (!value) {
-																	return;
-																}
-
-																const currentDate = new Date();
-																setInitialFromDate(null);
-
-																dispatch({
-																	type: 'EDIT_FORM',
-																	payload: {
-																		dateFrom: format(value, 'dd-MM-yyyy') + 'T00:00:00.000Z',
-																		active: currentDate >= value,
-																	},
-																});
-															}}
-															onClear={() =>
-																dispatch({
-																	type: 'EDIT_FORM',
-																	payload: {
-																		dateFrom: null,
-																		active: true,
-																	},
-																})
-															}
-														/>
-													</Tooltip.Provider>
-												)}
-											</Field.Root>
-										</Grid.Item>
-
-										<Grid.Item col={6} xs={6}>
-											<Field.Root style={{ width: '100%' }}>
-												<Field.Label>{formatMessage({ id: getTranslation(`forms.fields.dateTill`) })}</Field.Label>
-												{initialTillDate ? (
-													<>
-														<Flex>
-															<Typography>{initialTillDate}</Typography>
-															<Pencil
-																style={{
-																	cursor: 'pointer',
-																	marginLeft: '10px',
-																	width: '0.75rem',
-																}}
-																onClick={() => setInitialTillDate(null)}
-																color="primary"
-															/>
-														</Flex>
-													</>
-												) : (
-													<Tooltip.Provider delayDuration={0} skipDelayDuration={0}>
-														<DatePicker
-															locale="nl-NL"
-															minDate={new Date()}
-															label={formatMessage({ id: getTranslation(`forms.fields.dateTill`) })}
-															onChange={(value: any) => {
-																if (!value) {
-																	return;
-																}
-
-																const currentDate = new Date();
-																setInitialTillDate(null);
-
-																dispatch({
-																	type: 'EDIT_FORM',
-																	payload: {
-																		dateTill: format(value, 'dd-MM-yyyy') + 'T00:00:00.000Z',
-																		active: currentDate <= value,
-																	},
-																});
-															}}
-															onClear={() =>
-																dispatch({
-																	type: 'EDIT_FORM',
-																	payload: {
-																		dateTill: null,
-																		active: true,
-																	},
-																})
-															}
-														/>
-													</Tooltip.Provider>
-												)}
-											</Field.Root>
-										</Grid.Item>
-									</Grid.Root>
+								<Grid.Item col={12} xs={12}>
+									<Field.Root name="description" style={{ width: '100%' }}>
+										<Field.Label>{formatMessage({ id: getTranslation(`forms.fields.description`) })}</Field.Label>
+										<Textarea
+											name="description"
+											value={state.description || ''}
+											onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+												dispatch({
+													type: 'EDIT_FORM',
+													payload: {
+														description: event.currentTarget.value,
+													},
+												})
+											}
+										/>
+									</Field.Root>
 								</Grid.Item>
-
-								<Grid.Item padding={1} col={6} xs={6}>
+								<Grid.Item col={12} xs={12}>
+									<Field.Root name="active" style={{ width: '100%' }}>
+										<Field.Label>{formatMessage({ id: getTranslation(`forms.fields.active`) })}</Field.Label>
+										<Flex gap={2} alignItems="center">
+											<Switch
+												onCheckedChange={(value: boolean) =>
+													dispatch({
+														type: 'EDIT_FORM',
+														payload: {
+															active: value,
+														},
+													})
+												}
+												checked={state.active !== false}
+											/>
+											<Typography variant="pi" textColor={state.active !== false ? "success600" : "neutral600"}>
+												{state.active !== false 
+													? formatMessage({ id: getTranslation(`forms.fields.active.on`) })
+													: formatMessage({ id: getTranslation(`forms.fields.active.off`) })
+												}
+											</Typography>
+										</Flex>
+									</Field.Root>
+								</Grid.Item>
+								<Grid.Item col={12} xs={12}>
 									<Field.Root
 										required
 										name="successMessage"
@@ -348,7 +268,7 @@ const FormContent = () => {
 										<Field.Error />
 									</Field.Root>
 								</Grid.Item>
-								<Grid.Item padding={1} col={6} xs={6}>
+								<Grid.Item col={12} xs={12}>
 									<Field.Root
 										required
 										name="errorMessage"
@@ -376,11 +296,11 @@ const FormContent = () => {
 						</Box>
 
 						{/* Rate Limit Settings */}
-						<Box background="neutral0" padding={4} marginBottom={4} shadow="filterShadow" hasRadius>
-							<Typography variant="beta" fontWeight="bold" marginBottom={3}>
+						<Box background="neutral100" padding={6} marginBottom={4} shadow="filterShadow" hasRadius>
+							<Typography variant="beta" fontWeight="bold" marginBottom={4}>
 								Защита от спама
 							</Typography>
-							<Grid.Root gap={3}>
+							<Grid.Root gap={4}>
 								<Grid.Item col={12} xs={12}>
 									<Checkbox
 										checked={state.rateLimit?.enabled !== false}
@@ -410,18 +330,39 @@ const FormContent = () => {
 												<Field.Label>Максимальное количество отправок</Field.Label>
 												<NumberInput
 													value={state.rateLimit?.maxSubmissions || 5}
-													onValueChange={(value: number) =>
+													onValueChange={(value: number) => {
+														const minValue = 1;
+														// Блокируем значения меньше 1
+														if (value === null || value === undefined || isNaN(value) || value < minValue) {
+															return; // Не обновляем состояние, если значение недопустимо
+														}
 														dispatch({
 															type: 'EDIT_FORM',
 															payload: {
 																rateLimit: {
 																	...state.rateLimit,
-																	maxSubmissions: value || 1,
+																	maxSubmissions: value,
 																},
 															},
-														})
-													}
+														});
+													}}
+													onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+														const inputValue = parseInt(e.target.value, 10);
+														if (isNaN(inputValue) || inputValue < 1) {
+															// Если значение недопустимо, устанавливаем минимальное
+															dispatch({
+																type: 'EDIT_FORM',
+																payload: {
+																	rateLimit: {
+																		...state.rateLimit,
+																		maxSubmissions: 1,
+																	},
+																},
+															});
+														}
+													}}
 													min={1}
+													step={1}
 												/>
 											</Field.Root>
 										</Grid.Item>

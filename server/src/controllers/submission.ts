@@ -24,6 +24,18 @@ export default factories.createCoreController('plugin::api-forms.submission', ({
 				return ctx.badRequest('Form not found');
 			}
 
+			// Проверка активности формы
+			if (strapiForm.active === false) {
+				ctx.status = 403;
+				return ctx.send({
+					error: {
+						status: 403,
+						name: 'FormInactiveError',
+						message: 'Форма неактивна и не принимает отправки',
+					},
+				});
+			}
+
 			// Rate Limit проверка
 			const rateLimitService = strapi.plugin('api-forms').service('rateLimit');
 			const rateLimitConfig = strapiForm.rateLimit || {

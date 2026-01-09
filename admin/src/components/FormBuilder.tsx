@@ -3,11 +3,13 @@ import ReactGridLayout from 'react-grid-layout';
 
 import { Button, Flex, Box } from '@strapi/design-system';
 import { Plus } from '@strapi/icons';
+import { useIntl } from 'react-intl';
 
 import { Field, useFormContext } from '../context/FormContext';
 import FieldCard from './Fields/FieldCard';
 import FieldModal from './Modals/FieldModal';
 import { FieldActionsEnum } from '../utils/enums';
+import { getTranslation } from '../utils/getTranslation';
 
 import DesktopIcon from './Icons/Desktop';
 import TabletIcon from './Icons/Tablet';
@@ -19,6 +21,7 @@ const margin = 8;
 
 export const FormBuilder = () => {
   const { currentLayouts, currentBreakpoint, setCurrentBreakpoint } = useFormContext();
+  const { formatMessage } = useIntl();
   const [isModalVisible, setModalVisible] = useState(false);
   const [currentField, setCurrentField] = useState(null);
   const [gridWidth, setGridWidth] = useState(1200); // Initial grid width
@@ -128,10 +131,10 @@ export const FormBuilder = () => {
 
   return (
     <>
-      <Box background="white" padding={4} hasRadius marginBottom={4} shadow="filterShadow">
+      <Box background="neutral100" padding={4} hasRadius marginBottom={4} shadow="filterShadow">
         <Flex direction="row" gap={3} style={{ width: '100%' }} alignItems="flex-start">
           <Button onClick={handleAddField} startIcon={<Plus />}>
-            Add Field
+            {formatMessage({ id: getTranslation('forms.fields.add') })}
           </Button>
           <Button
             variant={currentBreakpoint === 'lg' ? 'primary' : 'secondary'}
@@ -156,7 +159,7 @@ export const FormBuilder = () => {
           </Button>
         </Flex>
       </Box>
-      <Box background="white" padding={4} hasRadius shadow="filterShadow">
+      <Box background="neutral100" padding={4} hasRadius shadow="filterShadow">
         <div id="grid-container" ref={containerRef}>
           <ReactGridLayout
             className="layout"

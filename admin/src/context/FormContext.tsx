@@ -9,6 +9,7 @@ export interface Field {
   name: string;
   placeholder: string;
   type: string;
+  description?: string;
   config?: {
     required?: boolean;
   };
@@ -37,6 +38,7 @@ export interface Step {
 export interface State {
   id?: number;
   title?: string;
+  description?: string;
   steps: Step[];
   currentStep: number;
   successMessage: string;

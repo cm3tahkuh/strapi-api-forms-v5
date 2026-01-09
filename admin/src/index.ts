@@ -27,16 +27,12 @@ export default {
 	},
 
 	async registerTrads({ locales }: { locales: string[] }) {
-		return await Promise.all(
-			locales.map(async (locale) => {
-				try {
-					const { default: data } = await import(`./translations/${locale}.json`);
-
-					return { data, locale };
-				} catch {
-					return { data: {}, locale };
-				}
-			})
-		);
+		// Загружаем только русский язык для всех локалей
+		const { default: ruData } = await import('./translations/ru.json');
+		
+		return locales.map((locale) => ({
+			data: ruData,
+			locale,
+		}));
 	},
 };

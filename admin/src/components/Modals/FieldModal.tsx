@@ -7,6 +7,7 @@ import {
   Field,
   SingleSelect,
   SingleSelectOption,
+  Textarea,
 } from '@strapi/design-system';
 import { useIntl } from 'react-intl';
 
@@ -47,6 +48,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
 
   const [label, setLabel] = useState(currentField?.label || '');
   const [placeholder, setPlaceholder] = useState(currentField?.placeholder || '');
+  const [description, setDescription] = useState(currentField?.description || '');
   const [fieldType, setFieldType] = useState(currentField?.type || null);
   const [config, setConfig] = useState<FieldConfigProps>(currentField?.config || {});
   const [options, setOptions] = useState<FieldOptionProps[]>(currentField?.options || []);
@@ -96,6 +98,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
     const payload = {
       label,
       placeholder,
+      description,
       name: toCamelCase(label),
       type: fieldType,
       config,
@@ -139,8 +142,41 @@ const FieldModal: React.FC<FieldModalProps> = ({
   };
 
   return (
-    <Modal.Root open={isVisible} onOpenChange={closeModal}>
-      <Modal.Content>
+    <>
+      <style>{`
+        [data-radix-portal] {
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+          filter: none !important;
+        }
+        [data-radix-portal] * {
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+          filter: none !important;
+          will-change: auto !important;
+        }
+        [data-radix-portal] [data-radix-modal-content] {
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+          filter: none !important;
+        }
+        [data-radix-portal] [data-radix-modal-overlay] {
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+          filter: none !important;
+        }
+      `}</style>
+      <Modal.Root open={isVisible} onOpenChange={closeModal}>
+        <Modal.Content style={{ 
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
+          textRendering: 'optimizeLegibility',
+          filter: 'none',
+          WebkitBackfaceVisibility: 'visible',
+          backfaceVisibility: 'visible',
+        }}>
         <Modal.Header>
           <Modal.Title>
             {formatMessage({
@@ -187,6 +223,17 @@ const FieldModal: React.FC<FieldModalProps> = ({
               <Field.Error />
             </Field.Root>
 
+            <Field.Root name="description" id="description">
+              <Field.Label>
+                {formatMessage({ id: getTranslation('forms.fields.description') })}
+              </Field.Label>
+              <Textarea
+                id="field-description"
+                value={description}
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value)}
+              />
+            </Field.Root>
+
             <Field.Root name="placeholder" id="placeholder">
               <Field.Label>
                 {formatMessage({ id: getTranslation('forms.fields.placeholder') })}
@@ -221,6 +268,7 @@ const FieldModal: React.FC<FieldModalProps> = ({
         </Modal.Footer>
       </Modal.Content>
     </Modal.Root>
+    </>
   );
 };
 

@@ -122,6 +122,7 @@ export default factories.createCoreController('plugin::api-forms.form', ({ strap
 							type: fieldData.type,
 							label: fieldData.label,
 							placeholder: fieldData.placeholder || '',
+							description: fieldData.description || '',
 							classnames: `${smWidth} lg:${lgWidth} md:${mdWidth}`,
 							options: fieldData.options || [],
 							validation: { required: fieldData.config?.required },
@@ -134,10 +135,18 @@ export default factories.createCoreController('plugin::api-forms.form', ({ strap
 				const fields = formattedSteps.flat().pop();
 				delete fields.step;
 
-				return (ctx.body = { fields, totalSubmissions: form.submissions.count || 0 });
+				return (ctx.body = { 
+					fields, 
+					description: form.description || '',
+					totalSubmissions: form.submissions.count || 0 
+				});
 			}
 
-			ctx.body = { steps: formattedSteps, count: formattedSteps.length };
+			ctx.body = { 
+				steps: formattedSteps, 
+				description: form.description || '',
+				count: formattedSteps.length 
+			};
 		} catch (error) {
 			ctx.throw(500, 'Error fetching form configuration', { error });
 		}
