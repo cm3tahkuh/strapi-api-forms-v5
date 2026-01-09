@@ -99,7 +99,7 @@ const Submission = () => {
 			id: getTranslation(`submission.title`),
 		}),
 		formatMessage({
-			id: getTranslation(`list.creation_date`),
+			id: getTranslation(`list.submission_time`),
 		}),
 		<VisuallyHidden>Actions</VisuallyHidden>,
 	];
@@ -148,18 +148,22 @@ const Submission = () => {
 											<Table.Loading />
 											<Table.Empty />
 											<Table.Body>
-												{results &&
-													results.map((row: any) => {
-														const creationDate = new Intl.DateTimeFormat('nl-NL', {
-															year: 'numeric',
-															month: 'long',
-															day: 'numeric',
-															hour: 'numeric',
-															minute: 'numeric',
-															second: 'numeric',
-														}).format(new Date(row.publishedAt));
+											{results &&
+												results.map((row: any) => {
+													// Форматируем дату в локальном часовом поясе пользователя
+													const creationDate = new Intl.DateTimeFormat('ru-RU', {
+														year: 'numeric',
+														month: '2-digit',
+														day: '2-digit',
+														hour: '2-digit',
+														minute: '2-digit',
+														second: '2-digit',
+														timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+													}).format(new Date(row.createdAt));
 
-														const submission = Object.entries(row.submission).map((value, key) => `${value.join(': ')}  `);
+													// Обрабатываем submission (может быть строкой JSON или объектом)
+													const submissionData = typeof row.submission === 'string' ? JSON.parse(row.submission) : row.submission;
+													const submission = Object.entries(submissionData).map((value, key) => `${value.join(': ')}  `);
 
 														return (
 															<Table.Row key={row.id}>
@@ -212,11 +216,20 @@ const Submission = () => {
 														<strong>Referer:</strong> {selectedSubmission.referer}
 													</Typography>
 												)}
-												{Object.entries(selectedSubmission.submission).map(([key, value]) => {
+												{Object.entries(typeof selectedSubmission.submission === 'string' ? JSON.parse(selectedSubmission.submission) : selectedSubmission.submission).map(([key, value]) => {
 													const allFields =
 														selectedSubmission.form.steps?.flatMap((step) => step.layouts?.lg?.map((layout) => layout.field) || []) || [];
 													const fieldConfig = allFields.find((f) => f.name === key);
 													const label = fieldConfig?.label || key;
+													const fieldType = fieldConfig?.type;
+
+													// Обработка checkbox значений
+													let displayValue = value;
+													if (fieldType === 'checkbox' && typeof value === 'boolean') {
+														displayValue = value ? 'Да' : 'Нет';
+													} else if (typeof value === 'boolean') {
+														displayValue = value ? 'Да' : 'Нет';
+													}
 
 													return (
 														<>
@@ -229,7 +242,7 @@ const Submission = () => {
 															<Box marginBottom={4} justifyContent="space-between" alignItems="flex-start" wrap="wrap">
 																{/* Value */}
 																<Typography textColor="neutral800" style={{ flex: 2 }}>
-																	{typeof value === 'object' ? (
+																	{typeof value === 'object' && !Array.isArray(value) ? (
 																		<pre
 																			style={{
 																				margin: 0,
@@ -240,7 +253,7 @@ const Submission = () => {
 																			{JSON.stringify(value, null, 2)}
 																		</pre>
 																	) : (
-																		value || 'N/A'
+																		displayValue || 'N/A'
 																	)}
 																</Typography>
 															</Box>

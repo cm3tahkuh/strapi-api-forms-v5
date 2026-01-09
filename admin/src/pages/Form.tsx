@@ -327,7 +327,7 @@ const FormContent = () => {
 									<>
 										<Grid.Item col={6} xs={12}>
 											<Field.Root>
-												<Field.Label>Максимальное количество отправок</Field.Label>
+												<Field.Label>Максимальное количество заполнения формы одним пользователем</Field.Label>
 												<NumberInput
 													value={state.rateLimit?.maxSubmissions || 5}
 													onValueChange={(value: number) => {

@@ -16,10 +16,48 @@ export default factories.createCoreService('plugin::api-forms.submission', ({ st
 			return;
 		}
 
+		// Получаем все поля формы для определения типов
+		const allFields = entities.steps?.flatMap((step) => step.layouts?.lg?.map((layout) => layout.field) || []) || [];
+		const fieldTypeMap = {};
+		allFields.forEach((field) => {
+			if (field && field.name) {
+				fieldTypeMap[field.name] = field.type;
+			}
+		});
+
 		const data = entities.submissions.map((result) => {
+			const submission = typeof result.submission === 'string' ? JSON.parse(result.submission) : result.submission;
+			const processedSubmission = {};
+
+			// Обрабатываем каждое поле
+			Object.entries(submission).forEach(([key, value]) => {
+				const fieldType = fieldTypeMap[key];
+				// Преобразуем checkbox значения в "Да"/"Нет"
+				if (fieldType === 'checkbox' && typeof value === 'boolean') {
+					processedSubmission[key] = value ? 'Да' : 'Нет';
+				} else if (typeof value === 'boolean') {
+					// Также обрабатываем любые boolean значения
+					processedSubmission[key] = value ? 'Да' : 'Нет';
+				} else {
+					processedSubmission[key] = value;
+				}
+			});
+
+			// Форматируем createdAt в локальном часовом поясе
+			const createdAtDate = new Date(result.createdAt);
+			const formattedDate = createdAtDate.toLocaleString('ru-RU', {
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit',
+				second: '2-digit',
+				timeZone: 'Europe/Moscow', // Используем московское время как локальное
+			});
+
 			return {
-				...result.submission,
-				createdAt: result.createdAt,
+				...processedSubmission,
+				'Время заполнения': formattedDate,
 			};
 		});
 

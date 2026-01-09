@@ -122,6 +122,7 @@
 	"api-forms.list.no_results": "Результаты не найдены",
 	"api-forms.list.name": "Название",
 	"api-forms.list.creation_date": "Создано",
+	"api-forms.list.submission_time": "Время заполнения",
 	"api-forms.list.submissions": "Отправки",
 	"api-forms.list.handlers": "Email отправок",
 	"api-forms.list.active": "Активна",

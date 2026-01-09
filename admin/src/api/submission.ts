@@ -4,19 +4,19 @@ import { SubmissionResponse, SubmissionsResponse } from '../utils/types';
 import { stringify } from 'qs';
 
 const submissionRequests = {
-	getSubmissions: async (token: string, queryFilter?: object): Promise<SubmissionsResponse> => {
-		const data = await fetchInstance(
-			`submissions?${stringify({
-				sort: 'publishedAt:desc',
-				populate: ['form', 'files'],
-				pagination: { page: queryFilter.page, pageSize: queryFilter.pageSize },
-			})}`,
-			token,
-			'GET',
-			null,
-			null,
-			true
-		);
+		getSubmissions: async (token: string, queryFilter?: object): Promise<SubmissionsResponse> => {
+			const data = await fetchInstance(
+				`submissions?${stringify({
+					sort: 'createdAt:desc',
+					populate: ['form', 'files'],
+					pagination: { page: queryFilter.page, pageSize: queryFilter.pageSize },
+				})}`,
+				token,
+				'GET',
+				null,
+				null,
+				true
+			);
 
 		return data.json();
 	},
