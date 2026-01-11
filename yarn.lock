@@ -2065,7 +2065,7 @@
     semver "7.5.4"
     umzug "3.8.1"
 
-"@strapi/design-system@^2.0.0-rc.26":
+"@strapi/design-system@^2.0.0-rc.21":
   version "2.1.0"
   resolved "https://registry.npmjs.org/@strapi/design-system/-/design-system-2.1.0.tgz"
   integrity sha512-r6sAuu5eyXJBoesj2HI0GI2eIUdc0sAEVHZyPsvdvnoDAWpmGw+eMfN02GOJVrUfe78uEGI31YwPrFcwevHpFg==
