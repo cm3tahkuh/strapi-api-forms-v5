@@ -60,6 +60,14 @@ export default {
 				},
 			},
 			{
+				method: 'DELETE',
+				path: '/submissions/:documentId',
+				handler: 'submission.delete',
+				config: {
+					policies: ['admin::isAuthenticatedAdmin'],
+				},
+			},
+			{
 				method: 'POST',
 				path: '/forms',
 				handler: 'form.create',

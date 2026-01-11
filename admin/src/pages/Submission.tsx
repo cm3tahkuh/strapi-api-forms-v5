@@ -1,8 +1,8 @@
 //@ts-nocheck
 import { useIntl } from 'react-intl';
 import { useEffect, useState } from 'react';
-import { Box, Flex, Grid, Button, LinkButton, Modal, Typography, VisuallyHidden } from '@strapi/design-system';
-import { Cog, Eye, File, Mail, Message } from '@strapi/icons';
+import { Box, Flex, Grid, Button, LinkButton, Modal, Typography, VisuallyHidden, Dialog } from '@strapi/design-system';
+import { Cog, Eye, File, Mail, Message, Trash } from '@strapi/icons';
 import { PLUGIN_ID } from '../pluginId';
 import { getTranslation } from '../utils/getTranslation';
 import { BackButton, Layouts, Page, Pagination, Table, useAuth, useQueryParams } from '@strapi/strapi/admin';
@@ -18,6 +18,8 @@ const Submission = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [selectedSubmission, setSelectedSubmission] = useState(null);
 	const [formTitle, setFormTitle] = useState<string | null>(null);
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+	const [submissionToDelete, setSubmissionToDelete] = useState(null);
 
 	const truncateValue = (value, maxLength = 100) => {
 		if (typeof value === 'string' && value.length > maxLength) {
@@ -34,6 +36,33 @@ const Submission = () => {
 	const handleCloseModal = () => {
 		setIsModalOpen(false);
 		setSelectedSubmission(null);
+	};
+
+	const handleOpenDeleteDialog = (submission) => {
+		setSubmissionToDelete(submission);
+		setIsDeleteDialogOpen(true);
+	};
+
+	const handleCloseDeleteDialog = () => {
+		setIsDeleteDialogOpen(false);
+		setSubmissionToDelete(null);
+	};
+
+	const handleDeleteSubmission = async () => {
+		if (!submissionToDelete) return;
+
+		try {
+			await submissionRequests.deleteSubmission(token, submissionToDelete.documentId);
+			// Перезагружаем данные после удаления
+			const response = await submissionRequests.getSubmissions(token, query, formId);
+			setResults(response.data || []);
+			setPagination(response.meta?.pagination || null);
+			setIsDeleteDialogOpen(false);
+			setSubmissionToDelete(null);
+		} catch (error) {
+			console.error('Error deleting submission:', error);
+			// Можно добавить уведомление об ошибке
+		}
 	};
 
 	const { formatMessage } = useIntl();
@@ -191,12 +220,21 @@ const Submission = () => {
 																</Table.Cell>
 
 																<Table.Cell>
+																	<Flex gap={2}>
 																	<LinkButton variant="secondary" onClick={() => handleOpenModal(row)}>
 																		<Flex gap={2} justifyContent="flex-start" alignItems="center">
 																			<Eye />
-																			View details
+																			{formatMessage({ id: getTranslation('submissions.submission.view_details') })}
 																		</Flex>
 																	</LinkButton>
+																		<Button
+																			variant="danger-light"
+																			size="S"
+																			onClick={() => handleOpenDeleteDialog(row)}
+																		>
+																			<Trash />
+																		</Button>
+																	</Flex>
 																</Table.Cell>
 															</Table.Row>
 														);
@@ -216,7 +254,7 @@ const Submission = () => {
 						<Modal.Root open={isModalOpen && selectedSubmission} onOpenChange={handleCloseModal}>
 							<Modal.Content>
 								<Modal.Header>
-									<Typography variant="beta">Submission Details</Typography>
+									<Typography variant="beta">{formatMessage({ id: getTranslation('submissions.submission.details') })}</Typography>
 								</Modal.Header>
 								<Modal.Body>
 									{selectedSubmission?.submission && selectedSubmission?.form && (
@@ -296,6 +334,42 @@ const Submission = () => {
 								</Modal.Footer>
 							</Modal.Content>
 						</Modal.Root>
+
+						{/* Модальное окно подтверждения удаления */}
+						<Dialog.Root open={isDeleteDialogOpen} onOpenChange={handleCloseDeleteDialog}>
+							<Dialog.Content>
+								<Dialog.Header>
+									<Typography variant="beta">
+										{formatMessage({ id: getTranslation('submissions.submission.delete_confirm_title') })}
+									</Typography>
+								</Dialog.Header>
+								<Dialog.Body>
+									<Typography>
+										{formatMessage({ id: getTranslation('submissions.submission.delete_confirm_message') })}
+									</Typography>
+									{submissionToDelete && (
+										<Box marginTop={4} padding={3} background="neutral100" hasRadius>
+											<Typography variant="omega" fontWeight="bold">
+												ID: {submissionToDelete.id}
+											</Typography>
+											<Typography variant="omega" textColor="neutral600">
+												{new Date(submissionToDelete.createdAt).toLocaleString('ru-RU')}
+											</Typography>
+										</Box>
+									)}
+								</Dialog.Body>
+								<Dialog.Footer>
+									<Dialog.Cancel>
+										<Button variant="tertiary">
+											{formatMessage({ id: getTranslation('cancel') })}
+										</Button>
+									</Dialog.Cancel>
+									<Button variant="danger" onClick={handleDeleteSubmission}>
+										{formatMessage({ id: getTranslation('delete') })}
+									</Button>
+								</Dialog.Footer>
+							</Dialog.Content>
+						</Dialog.Root>
 					</Layouts.Content>
 				</Page.Main>
 			</Layouts.Root>

@@ -108,6 +108,57 @@ export default factories.createCoreController('plugin::api-forms.submission', ({
 				});
 			}
 
+			// Валидация обязательных полей
+			const submissionData = typeof submission === 'string' ? JSON.parse(submission) : submission;
+			const allFields = strapiForm.steps?.flatMap((step) => 
+				step.layouts?.lg?.map((layout) => layout.field) || []
+			) || [];
+
+			const validationErrors = [];
+
+			for (const field of allFields) {
+				if (!field || !field.config?.required) {
+					continue;
+				}
+
+				const fieldName = field.name;
+				const fieldValue = submissionData[fieldName];
+				const fieldType = field.type;
+
+				// Проверка наличия поля
+				if (fieldValue === undefined || fieldValue === null) {
+					validationErrors.push(`Поле "${field.label || fieldName}" обязательно для заполнения`);
+					continue;
+				}
+
+				// Для checkbox обязательное поле должно быть true
+				if (fieldType === 'checkbox') {
+					if (fieldValue !== true && fieldValue !== 'true') {
+						validationErrors.push(`Поле "${field.label || fieldName}" должно быть отмечено`);
+					}
+				}
+				// Для других типов полей проверяем, что значение не пустое
+				else if (typeof fieldValue === 'string' && fieldValue.trim() === '') {
+					validationErrors.push(`Поле "${field.label || fieldName}" обязательно для заполнения`);
+				}
+				// Для массивов проверяем, что они не пустые
+				else if (Array.isArray(fieldValue) && fieldValue.length === 0) {
+					validationErrors.push(`Поле "${field.label || fieldName}" обязательно для заполнения`);
+				}
+			}
+
+			if (validationErrors.length > 0) {
+				ctx.status = 400;
+				return ctx.send({
+					error: {
+						status: 400,
+						name: 'ValidationError',
+						message: validationErrors.join('; '),
+						details: validationErrors,
+					},
+				});
+			}
+
 			// Rate Limit проверка
 			const rateLimitService = strapi.plugin('api-forms').service('rateLimit');
 			const rateLimitConfig = strapiForm.rateLimit || {
@@ -160,7 +211,7 @@ export default factories.createCoreController('plugin::api-forms.submission', ({
 					form: {
 						connect: form,
 					},
-					submission: JSON.stringify(submission),
+					submission: JSON.stringify(submissionData),
 					files: files.map((file) => file.id), // Store only file IDsr
 					referer,
 				},
@@ -178,5 +229,30 @@ export default factories.createCoreController('plugin::api-forms.submission', ({
 			data: await strapi.plugin('api-forms').service('submission').export(id),
 			filename: `export-${id}-${Math.random()}.csv`,
 		};
+	},
+
+	async delete(ctx) {
+		const { documentId } = ctx.params;
+
+		try {
+			// Находим submission по documentId
+			const submission = await strapi.documents('plugin::api-forms.submission').findOne({
+				documentId,
+			});
+
+			if (!submission) {
+				return ctx.notFound('Submission not found');
+			}
+
+			// Удаляем submission
+			await strapi.documents('plugin::api-forms.submission').delete({
+				documentId,
+			});
+
+			return ctx.send({ message: 'Submission deleted successfully' });
+		} catch (error) {
+			strapi.log.error('Error deleting submission:', error);
+			return ctx.internalServerError('Error deleting submission');
+		}
 	},
 }));

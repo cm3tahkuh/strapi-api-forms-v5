@@ -37,6 +37,10 @@ const submissionRequests = {
 
 		return data.json();
 	},
+
+	deleteSubmission: async (token: string, documentId: string): Promise<void> => {
+		await fetchInstance(`submissions/${documentId}`, token, 'DELETE', null, null, true);
+	},
 };
 
 export default submissionRequests;
