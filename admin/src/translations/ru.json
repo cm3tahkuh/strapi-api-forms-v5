@@ -9,6 +9,7 @@
 	"api-forms.actions.notifications": "Уведомления по email",
 	"api-forms.actions.notification": "Уведомление по email",
 	"api-forms.actions.delete": "Удалить",
+	"api-forms.delete": "Удалить",
 	"api-forms.actions.view": "Просмотр",
 	"api-forms.alert.success": "Успешно",
 	"api-forms.alert.description.success": "Контент успешно сохранен",

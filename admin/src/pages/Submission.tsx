@@ -349,12 +349,14 @@ const Submission = () => {
 									</Typography>
 									{submissionToDelete && (
 										<Box marginTop={4} padding={3} background="neutral100" hasRadius>
-											<Typography variant="omega" fontWeight="bold">
-												ID: {submissionToDelete.id}
-											</Typography>
-											<Typography variant="omega" textColor="neutral600">
-												{new Date(submissionToDelete.createdAt).toLocaleString('ru-RU')}
-											</Typography>
+											<Flex direction="column" gap={1}>
+												<Typography variant="omega" fontWeight="bold">
+													ID: {submissionToDelete.id}
+												</Typography>
+												<Typography variant="omega" textColor="neutral600">
+													{new Date(submissionToDelete.createdAt).toLocaleString('ru-RU')}
+												</Typography>
+											</Flex>
 										</Box>
 									)}
 								</Dialog.Body>
