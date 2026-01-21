@@ -1,5 +1,5 @@
 {
-	"version": "2.4.4",
+	"version": "2.4.5",
 	"keywords": [
 		"strapi",
 		"strapi-plugin",
@@ -42,7 +42,6 @@
 	},
 	"dependencies": {
 		"@faker-js/faker": "^9.4.0",
-		"@json2csv/node": "^7.0.6",
 		"@material-symbols/svg-400": "^0.27.2",
 		"@strapi/design-system": "^2.0.0-rc.21",
 		"@strapi/icons": "^2.0.0-rc.14",
@@ -74,7 +73,8 @@
 		"react-intl": "^7.1.0",
 		"request": "^2.88.2",
 		"tiptap-extension-resizable-image": "^1.0.7",
-		"tiptap-extension-resize-image": "^1.2.1"
+		"tiptap-extension-resize-image": "^1.2.1",
+		"xlsx": "^0.18.5"
 	},
 	"devDependencies": {
 		"@strapi/sdk-plugin": "^5.2.8",

@@ -3,7 +3,7 @@
  *  service
  */
 import { factories } from '@strapi/strapi';
-import { AsyncParser } from '@json2csv/node';
+import * as XLSX from 'xlsx';
 
 export default factories.createCoreService('plugin::api-forms.submission', ({ strapi }) => ({
 	async export(formId) {
@@ -61,9 +61,13 @@ export default factories.createCoreService('plugin::api-forms.submission', ({ st
 			};
 		});
 
-		const parser = new AsyncParser();
+		// Создаем Excel файл
+		const worksheet = XLSX.utils.json_to_sheet(data);
+		const workbook = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(workbook, worksheet, 'Submissions');
 
-		return await parser.parse(data).promise();
+		// Возвращаем buffer
+		return XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
 	},
 
 	async upload(file) {

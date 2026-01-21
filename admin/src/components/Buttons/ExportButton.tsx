@@ -23,20 +23,37 @@ const ExportButton = ({ formId, disabled }: ExportButtonProps) => {
   const processSubmissionExport = async (formId: number) => {
     toggleLoading(true);
 
-    get(`/${PLUGIN_ID}/submissions/export/${formId}`).then((response: any) => {
-      const blob = new Blob([response.data.data]);
+    try {
+      // Используем useFetchClient для автоматической авторизации
+      const response: any = await get(`/${PLUGIN_ID}/submissions/export/${formId}`);
+
+      // Создаем blob из buffer
+      const blob = new Blob([new Uint8Array(response.data.data)], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+
+      const filename = response.data.filename || `export-${formId}-${Date.now()}.xlsx`;
+
       const link = document.createElement('a');
-
       link.href = window.URL.createObjectURL(blob);
-
-      link.download = response.data.filename;
+      link.download = filename;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(link.href);
 
       toggleLoading(false);
       toggleNotification({
         type: 'success',
       });
-    });
+    } catch (error) {
+      console.error('Export error:', error);
+      toggleLoading(false);
+      toggleNotification({
+        type: 'danger',
+        message: 'Export failed',
+      });
+    }
   };
 
   return (

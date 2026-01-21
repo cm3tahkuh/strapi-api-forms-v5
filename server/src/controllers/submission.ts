@@ -225,9 +225,14 @@ export default factories.createCoreController('plugin::api-forms.submission', ({
 
 	async export(ctx) {
 		const { id } = ctx.params;
+		const buffer = await strapi.plugin('api-forms').service('submission').export(id);
+		
+		const filename = `export-${id}-${Date.now()}.xlsx`;
+		
+		// Возвращаем как JSON для совместимости с useFetchClient
 		return {
-			data: await strapi.plugin('api-forms').service('submission').export(id),
-			filename: `export-${id}-${Math.random()}.csv`,
+			data: Array.from(buffer),
+			filename: filename,
 		};
 	},
 
